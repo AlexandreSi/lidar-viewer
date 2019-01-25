@@ -1,0 +1,9 @@
+{
+  "name": "lidar-viewer",
+  "version": "0.0.1",
+  "description": "Web-based Lidar Viewer",
+  "main": "index.js",
+  "repository": "https://github.com/AlexandreSi/lidar-viewer.git",
+  "author": "alexandre <alexandres@sicara.com>",
+  "license": "MIT"
+}
