@@ -5,5 +5,10 @@
   "main": "index.js",
   "repository": "https://github.com/AlexandreSi/lidar-viewer.git",
   "author": "alexandre <alexandres@sicara.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "antd": "^3.12.4",
+    "react": "^16.7.0",
+    "three-full": "https://github.com/sicara/three-full-sicara.git#dev"
+  }
 }
