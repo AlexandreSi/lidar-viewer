@@ -1,5 +1,7 @@
-@import '~antd/dist/antd.css';
-
 .App {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(220,14,120,0.4), rgba(250, 0, 150, 0.5));
+  height: 100%;
 }
