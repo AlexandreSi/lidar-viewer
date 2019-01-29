@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Button as AntButton } from 'antd';
+import { style } from 'theme/style';
 
-export const Button = styled(AntButton)`
-  border: none;
+export const Title = styled.h1`
+  color: ${style['@primary-color']};
 `;
