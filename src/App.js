@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
-import { Title } from './App.style';
+import { Title, Button } from './App.style';
 import './App.css';
 
 
