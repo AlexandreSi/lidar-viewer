@@ -8,6 +8,8 @@ const fadeDuration = "1.2s";
 
 export const Title = styled.h1`
   color: ${style['@primary-color']};
+  font-size: 40px;
+  font-family: ${style.fonts.primary};
   animation: fade-down ${fadeDuration} ease-out forwards;
 `;
 

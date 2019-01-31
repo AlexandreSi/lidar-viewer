@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className="App">
         <Title>Welcome to LiDAR-viewer</Title>
-        <Button type="primary">Hello world!</Button>
+        <Button type="primary">Continue</Button>
       </div>
     );
   }

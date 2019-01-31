@@ -13,9 +13,11 @@ body {
   height: 100%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+@font-face {
+  font-family: SansForgetica-Regular;
+  font-style: normal;
+  font-weight: normal;
+  src: url("./theme/SansForgetica-Regular.otf") format("opentype");
 }
 
 @keyframes fade-down {
