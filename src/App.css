@@ -6,3 +6,41 @@
   background: linear-gradient(rgba(220,14,120,0.4), rgba(250, 0, 150, 0.5));
   height: 100%;
 }
+
+.continue-button-enter {
+  opacity: 0.01;
+}
+
+.continue-button-enter-active {
+  opacity: 1;
+  transition: opacity 1500ms ease-out;
+}
+
+.continue-button-exit-active {
+  opacity: 0.01;
+  transition: opacity 0ms ease-in;
+}
+
+.title-enter {
+  opacity: 0.01;
+  transform: translateY(-50px);
+}
+
+.title-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: all 1200ms ease-out;
+}
+
+.title-exit {
+  opacity: 1;
+}
+
+.title-exit-active {
+  opacity: 0.01;
+  transition: opacity 700ms ease-in;
+}
+
+.title-exit-done {
+  opacity: 0;
+}
