@@ -18,7 +18,11 @@
 
 .continue-button-exit-active {
   opacity: 0.01;
-  transition: opacity 0ms ease-in;
+  transition: opacity 1000ms ease-in;
+}
+
+.continue-button-exit {
+  opacity: 0.01;
 }
 
 .title-enter {
