@@ -12,9 +12,7 @@ export default (containerElement) => {
   animate();
 
   function loadPoints(fileToOpen) {
-    const fileURL = 'Block_379.las';
-    const fileName = fileURL;
-    const filetype = 'las';
+    const fileURL = 'Block_589.las';
 
     const loader = new LasLoader();
 
@@ -58,8 +56,8 @@ export default (containerElement) => {
   function resizeCanvas() {
     canvas.style.width = '100%';
     canvas.style.height= '100%';
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     sceneManager.onWindowResize();
   }
 

@@ -85,7 +85,7 @@
 
     // call the callback in a separate context, make sure we've cleaned our
     // state out before the callback is invoked since it may queue more doExchanges
-    setTimeout(function() { 
+    setTimeout(function() {
       if (msg.error)
         return resolver.reject(new Error(msg.message || "Unknown Error"));
 
@@ -246,8 +246,9 @@
   };
 
   LASDecoder.prototype.getPoint = function(index) {
-    if (index < 0 || index >= this.pointsCount)
+    if (index < 0 || index >= this.pointsCount) {
       throw new Error("Point index out of range");
+    }
 
     var dv = new DataView(this.arrayb, index * this.pointSize, this.pointSize);
     return this.decoder(dv);
@@ -259,4 +260,3 @@
   scope.LASModuleWasLoaded = false;
 })(module.exports);
 //})(this);
-

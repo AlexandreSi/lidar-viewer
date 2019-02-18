@@ -1,7 +1,7 @@
 /* eslint-disable */
 import {
   FileLoader,
-  DefaultLoadingManager, 
+  DefaultLoadingManager,
 } from 'three-full';
 
 import { LASFile, LASDecoder } from './LasLaz';
@@ -48,12 +48,12 @@ LasLoader.prototype = {
   },
 
   parse: async function ( buffer, url ) {
-    let lf = new LASFile(buffer);
-    lf.open();
+    let lasFile = new LASFile(buffer);
+    lasFile.open();
     // TODO check let handler = new LasLazBatcher();
-    
-    var LASHeader = await lf.getHeader();
-    var textData = await lf.readData(LASHeader.pointsCount, LASHeader.offset, 0);
+
+    var LASHeader = await lasFile.getHeader();
+    var textData = await lasFile.readData(LASHeader.pointsCount, LASHeader.offset, 0);
 
     var offset = LASHeader.offset;
     var lasData = textData.buffer;
