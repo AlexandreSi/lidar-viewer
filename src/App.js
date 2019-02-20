@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'antd';
 import { CSSTransition } from 'react-transition-group'
 
+import Steps from 'components/Steps';
 import { Title, WelcomeContainer } from './App.style';
 import ThreeContainer from 'components/ThreeContainer';
 import './App.css';
@@ -11,7 +12,9 @@ class App extends Component {
   state = {
     showTitle: false,
     showButton: true,
+    showProgress: false,
     showViewer: false,
+    percentageLoaded: 0,
   }
 
   componentDidMount() {
@@ -27,6 +30,7 @@ class App extends Component {
   }
 
   toggleViewer = () => {
+    this.toggleProgress()
     this.setState({
       showViewer: !this.state.showViewer,
     })
@@ -41,6 +45,18 @@ class App extends Component {
   toggleButton = () => {
     this.setState({
       showButton: !this.state.showButton,
+    })
+  }
+
+  toggleProgress = () => {
+    this.setState({
+      showProgress: !this.state.showProgress,
+    })
+  }
+
+  changePercentage = (percentage) => {
+    this.setState({
+      percentageLoaded: Math.round(percentage),
     })
   }
 
@@ -67,7 +83,8 @@ class App extends Component {
             <Button type="primary" onClick={this.handleClick}>Continue</Button>
           </CSSTransition>
         </WelcomeContainer>
-        {this.state.showViewer && <ThreeContainer />}
+        {this.state.showViewer && <ThreeContainer changePercentage={this.changePercentage} />}
+        <Steps fileRead={this.state.percentageLoaded === 100} />
       </div>
     );
   }

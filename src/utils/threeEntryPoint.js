@@ -2,7 +2,7 @@
 import SceneManager3D from 'components/SceneManager3D';
 import { LasLoader } from 'utils/LASLoader';
 
-export default (containerElement) => {
+export default (containerElement, changePercentage) => {
   const canvas = createCanvas(document, containerElement);
   let pointCloud = undefined;
   let sceneManager = new SceneManager3D(canvas);
@@ -24,7 +24,7 @@ export default (containerElement) => {
     }
 
     const onProgress = (xhr) => {
-      console.log(xhr.loaded / xhr.total * 100)
+      changePercentage(xhr.loaded / xhr.total * 100)
     }
 
     const onError = (error) => {

@@ -5,7 +5,7 @@ import threeEntryPoint from 'utils/threeEntryPoint';
 export default class ThreeContainer extends Component {
 
   componentDidMount() {
-    threeEntryPoint(this.threeRootElement);
+    threeEntryPoint(this.threeRootElement, this.props.changePercentage);
   }
 
   render() {
