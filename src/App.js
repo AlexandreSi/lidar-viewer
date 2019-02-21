@@ -10,6 +10,7 @@ import './App.css';
 
 class App extends Component {
   state = {
+    colorsLoaded: false,
     showTitle: false,
     showButton: true,
     showProgress: false,
@@ -60,6 +61,12 @@ class App extends Component {
     })
   }
 
+  toggleColorsLoaded = async () => {
+    this.setState({
+      colorsLoaded: !this.state.colorsLoaded,
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -83,8 +90,16 @@ class App extends Component {
             <Button type="primary" onClick={this.handleClick}>Continue</Button>
           </CSSTransition>
         </WelcomeContainer>
-        {this.state.showViewer && <ThreeContainer changePercentage={this.changePercentage} />}
-        <Steps fileRead={this.state.percentageLoaded === 100} />
+        {this.state.showViewer && (
+          <ThreeContainer
+            changePercentage={this.changePercentage}
+            toggleColorsLoaded={this.toggleColorsLoaded}
+          />
+        )}
+        <Steps
+          fileRead={this.state.percentageLoaded === 100}
+          colorsLoaded={this.state.colorsLoaded}
+        />
       </div>
     );
   }

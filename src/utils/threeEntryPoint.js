@@ -2,7 +2,7 @@
 import SceneManager3D from 'components/SceneManager3D';
 import { LasLoader } from 'utils/LASLoader';
 
-export default (containerElement, changePercentage) => {
+export default (containerElement, changePercentage, toggleColorsLoaded) => {
   const canvas = createCanvas(document, containerElement);
   let pointCloud = undefined;
   let sceneManager = new SceneManager3D(canvas);
@@ -14,7 +14,7 @@ export default (containerElement, changePercentage) => {
   function loadPoints(fileToOpen) {
     const fileURL = 'Block_589.las';
 
-    const loader = new LasLoader();
+    const loader = new LasLoader(toggleColorsLoaded);
 
     const onLoaded = (pointsPromise) => {
       pointsPromise.then((pointsData) => {

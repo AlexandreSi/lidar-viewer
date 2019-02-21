@@ -6,9 +6,10 @@ import {
 
 import { LASFile, LASDecoder } from './LasLaz';
 
-var LasLoader = function ( manager ) {
+var LasLoader = function ( toggleColorsLoaded ) {
 
-  this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+  this.toggleColorsLoaded = toggleColorsLoaded;
+  this.manager = DefaultLoadingManager;
   this.littleEndian = true;
 
 };
@@ -48,6 +49,8 @@ LasLoader.prototype = {
   },
 
   parse: async function ( buffer, url ) {
+    var scope = this;
+
     let lasFile = new LASFile(buffer);
     lasFile.open();
     // TODO check let handler = new LasLazBatcher();
@@ -95,6 +98,8 @@ LasLoader.prototype = {
       color.push(colorB);
     }
     const pointCloud = { position, color }
+
+    await scope.toggleColorsLoaded()
 
     return pointCloud
   },
