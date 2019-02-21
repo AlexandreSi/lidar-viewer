@@ -2,17 +2,15 @@
 import uniqueId from 'lodash/uniqueId';
 
 import {
-  AxesHelper,
-  Float32BufferAttribute, 
+  Float32BufferAttribute,
   VertexColors,
   BufferGeometry,
-  PointsMaterial, 
-  Points, 
+  PointsMaterial,
+  Points,
   DodecahedronGeometry,
   FaceColors,
   Mesh,
   MeshBasicMaterial,
-  PCDLoader2,
   PerspectiveCamera,
   Raycaster,
   Scene,
@@ -40,8 +38,6 @@ export default (canvas) => {
 
   function buildScene() {
     const scene = new Scene();
-    const axesHelper = new AxesHelper(10);
-    scene.add(axesHelper);
 
     return scene;
   }
@@ -67,13 +63,9 @@ export default (canvas) => {
   }
 
   function resetCamera(camera) {
-    camera.position.set(400, 400, 100);
+    camera.position.set(50.52907578918891, 4.879441528184972, 4.3330827374585694);
     camera.up = new Vector3( 0, 0, 1 );
-    camera.lookAt( scene.position );
-    if (controls){
-      controls.target = new Vector3( 0, 0, 0 );
-      controls.update();
-    }
+    camera.lookAt(0, 0, 0);
   }
 
   function buildControls(camera, canvas) {
@@ -86,6 +78,9 @@ export default (canvas) => {
     controls.noPan = false;
     controls.staticMoving = false;
     controls.dynamicDampingFactor = 1;
+
+    controls.target = new Vector3( 28.712089208297673, 102.00919851743899, 1.180817822160953 );
+    controls.update();
 
     return controls
   }
@@ -106,7 +101,7 @@ export default (canvas) => {
     // build material
 
     var material = new PointsMaterial({
-      size: 0.2,
+      size: 0.3,
       vertexColors: VertexColors,
     });
 

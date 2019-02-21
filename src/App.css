@@ -48,3 +48,25 @@
 .title-exit-done {
   opacity: 0;
 }
+
+.progress-enter {
+  opacity: 0.01;
+}
+
+.progress-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+}
+
+.progress-exit-active {
+  opacity: 0.01;
+  transition: opacity 1000ms ease-out;
+}
+
+.progress-exit {
+  opacity: 1;
+}
+
+.progress-exit-done {
+  opacity: 0;
+}

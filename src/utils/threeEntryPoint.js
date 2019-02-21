@@ -6,20 +6,22 @@ export default (containerElement, changePercentage, toggleColorsLoaded) => {
   const canvas = createCanvas(document, containerElement);
   let pointCloud = undefined;
   let sceneManager = new SceneManager3D(canvas);
-  loadPoints(null);
+  loadPoints(null, toggleColorsLoaded);
 
   bindEventListeners();
   animate();
 
-  function loadPoints(fileToOpen) {
+  function loadPoints(fileToOpen, toggleColorsLoaded) {
     const fileURL = 'Block_589.las';
 
     const loader = new LasLoader(toggleColorsLoaded);
 
-    const onLoaded = (pointsPromise) => {
+    const onLoaded = (pointsPromise, toggleColorsLoaded) => {
+
       pointsPromise.then((pointsData) => {
         pointCloud = pointsData;
-        sceneManager.createSceneSubjects(sceneManager.scene, pointsData);
+        sceneManager.createSceneSubjects(sceneManager.scene, pointsData)
+        toggleColorsLoaded()
       });
     }
 
@@ -36,6 +38,7 @@ export default (containerElement, changePercentage, toggleColorsLoaded) => {
       onLoaded,
       onProgress,
       onError,
+      toggleColorsLoaded,
     );
   }
 

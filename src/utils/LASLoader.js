@@ -6,9 +6,8 @@ import {
 
 import { LASFile, LASDecoder } from './LasLaz';
 
-var LasLoader = function ( toggleColorsLoaded ) {
+var LasLoader = function ( ) {
 
-  this.toggleColorsLoaded = toggleColorsLoaded;
   this.manager = DefaultLoadingManager;
   this.littleEndian = true;
 
@@ -18,7 +17,7 @@ LasLoader.prototype = {
 
   constructor: LasLoader,
 
-  load: function ( url, onLoad, onProgress, onError ) {
+  load: function ( url, onLoad, onProgress, onError, toggleColorsLoaded ) {
 
     var scope = this;
 
@@ -28,7 +27,7 @@ LasLoader.prototype = {
 
       try {
 
-        onLoad( scope.parse( data, url ) );
+        onLoad( scope.parse( data, url ), toggleColorsLoaded );
 
       } catch ( e ) {
 
@@ -53,7 +52,6 @@ LasLoader.prototype = {
 
     let lasFile = new LASFile(buffer);
     lasFile.open();
-    // TODO check let handler = new LasLazBatcher();
 
     var LASHeader = await lasFile.getHeader();
     var textData = await lasFile.readData(LASHeader.pointsCount, LASHeader.offset, 0);
@@ -77,29 +75,23 @@ LasLoader.prototype = {
 
     for ( var i = 0, l = LASHeader.pointsCount - 1; i < l; i ++ ) {
       var point = decoder.getPoint(i);
-      var pointPosition = point.position;
-      var pointPositionX =
-        (pointPosition[0] * LASHeader.scale[0])
-        + LASHeader.offset[0] - LASHeader.mins[0];
-      var pointPositionY =
-        (pointPosition[1] * LASHeader.scale[1])
-        + LASHeader.offset[1] - LASHeader.mins[1];
-      var pointPositionZ =
-        (pointPosition[2] * LASHeader.scale[2])
-        + LASHeader.offset[2] - LASHeader.mins[2];
-      var colorR = point.color[0] / 65535;
-      var colorG = point.color[1] / 65535;
-      var colorB = point.color[2] / 65535;
-      position.push(pointPositionX);
-      position.push(pointPositionY);
-      position.push(pointPositionZ);
-      color.push(colorR);
-      color.push(colorG);
-      color.push(colorB);
+      position.push(
+        (point.position[0] * LASHeader.scale[0])
+        + LASHeader.offset[0] - LASHeader.mins[0]
+      );
+      position.push(
+        (point.position[1] * LASHeader.scale[1])
+        + LASHeader.offset[1] - LASHeader.mins[1]
+      );
+      position.push(
+        (point.position[2] * LASHeader.scale[2])
+        + LASHeader.offset[2] - LASHeader.mins[2]
+      );
+      color.push(point.color[0] / 65535);
+      color.push(point.color[1] / 65535);
+      color.push(point.color[2] / 65535);
     }
     const pointCloud = { position, color }
-
-    await scope.toggleColorsLoaded()
 
     return pointCloud
   },

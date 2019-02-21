@@ -61,10 +61,11 @@ class App extends Component {
     })
   }
 
-  toggleColorsLoaded = async () => {
+  toggleColorsLoaded = () => {
     this.setState({
-      colorsLoaded: !this.state.colorsLoaded,
+      colorsLoaded: true,
     })
+    this.toggleProgress()
   }
 
   render() {
@@ -96,10 +97,17 @@ class App extends Component {
             toggleColorsLoaded={this.toggleColorsLoaded}
           />
         )}
-        <Steps
-          fileRead={this.state.percentageLoaded === 100}
-          colorsLoaded={this.state.colorsLoaded}
-        />
+        <CSSTransition
+          in={this.state.showProgress}
+          classNames="progress"
+          timeout={1000}
+          unmountOnExit
+        >
+          <Steps
+            fileRead={this.state.percentageLoaded === 100}
+            colorsLoaded={this.state.colorsLoaded}
+          />
+        </CSSTransition>
       </div>
     );
   }
