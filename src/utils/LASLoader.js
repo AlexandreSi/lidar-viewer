@@ -80,12 +80,12 @@ LasLoader.prototype = {
         + LASHeader.offset[0] - LASHeader.mins[0]
       );
       position.push(
-        (point.position[1] * LASHeader.scale[1])
-        + LASHeader.offset[1] - LASHeader.mins[1]
-      );
-      position.push(
         (point.position[2] * LASHeader.scale[2])
         + LASHeader.offset[2] - LASHeader.mins[2]
+      );
+      position.push(
+        (point.position[1] * LASHeader.scale[1])
+        + LASHeader.offset[1] - LASHeader.mins[1]
       );
       color.push(point.color[0] / 65535);
       color.push(point.color[1] / 65535);

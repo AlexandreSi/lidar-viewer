@@ -1,24 +1,16 @@
-/* eslint-disable */
-import uniqueId from 'lodash/uniqueId';
-
 import {
   Float32BufferAttribute,
   VertexColors,
   BufferGeometry,
   PointsMaterial,
   Points,
-  DodecahedronGeometry,
-  FaceColors,
-  Mesh,
-  MeshBasicMaterial,
   PerspectiveCamera,
-  Raycaster,
   Scene,
-  TrackballControls,
-  Vector2,
   Vector3,
   WebGLRenderer,
 } from 'three-full';
+
+import { PointerLockControls } from 'utils/PointerLockControls';
 
 export default (canvas) => {
 
@@ -27,99 +19,107 @@ export default (canvas) => {
     height: canvas.height
   }
 
-  const mouseVector = new Vector2();
-
-  const pointCloudName = 'pointCloud';
-
   const scene = buildScene();
-  const renderer = buildRenderer(screenDimensions);
-  const camera = buildCamera(screenDimensions, scene);
-  const controls = buildControls(camera, canvas);
+  const renderer = buildRenderer(screenDimensions, canvas);
+  const camera = buildCamera(screenDimensions);
+  const controls = buildControls(camera);
+  scene.add(controls.getObject());
+
+  let moveForward = false;
+  let moveLeft = false;
+  let moveBackward = false;
+  let moveRight = false;
+  let prevTime = performance.now();
+  let velocity = new Vector3();
+  let direction = new Vector3();
 
   function buildScene() {
     const scene = new Scene();
-
     return scene;
   }
 
-  function buildRenderer({ width, height }) {
+  function buildRenderer({ width, height }, canvas) {
     const devicePixelRatio = window.devicePixelRatio || 1;
     const renderer = new WebGLRenderer({
       canvas: canvas,
       alpha: true,
       antialias: true
     });
-    renderer.setPixelRatio( devicePixelRatio );
-    renderer.setSize( width, height );
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(width, height);
 
     return renderer;
   }
 
-  function buildCamera({ width, height }, scene) {
-    const camera = new PerspectiveCamera( 10, width / height, 1, 1000 );
-    resetCamera(camera);
+  function buildCamera({ width, height }) {
+    const camera = new PerspectiveCamera(75, width / height, 1, 1000);
 
     return camera;
   }
 
-  function resetCamera(camera) {
-    camera.position.set(50.52907578918891, 4.879441528184972, 4.3330827374585694);
-    camera.up = new Vector3( 0, 0, 1 );
-    camera.lookAt(0, 0, 0);
+  function spawn(controlsObject) {
+    controlsObject.position.set(50.53, 4.88, 4.33);
+    controlsObject.rotation.y = - 3.36;
   }
 
-  function buildControls(camera, canvas) {
-    const controls = new TrackballControls(camera, canvas);
-
-    controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = 3.2;
-    controls.panSpeed = 0.2;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = false;
-    controls.dynamicDampingFactor = 1;
-
-    controls.target = new Vector3( 28.712089208297673, 102.00919851743899, 1.180817822160953 );
-    controls.update();
+  function buildControls(camera) {
+    const controls = new PointerLockControls(camera);
+    controls.enabled = true;
+    const controlsObject = controls.getObject()
+    spawn(controlsObject);
 
     return controls
   }
 
   function createSceneSubjects(scene, { position, color }) {
-    var url = 'pointCloud';
     var geometry = new BufferGeometry();
     geometry.addAttribute(
       'position',
-      new Float32BufferAttribute( position, 3 )
-    );
+      new Float32BufferAttribute(position, 3)
+  );
     geometry.addAttribute(
       'color',
-      new Float32BufferAttribute( color, 3 )
-    );
+      new Float32BufferAttribute(color, 3)
+  );
     geometry.computeBoundingSphere();
 
     // build material
 
     var material = new PointsMaterial({
-      size: 0.3,
+      size: 0.1,
       vertexColors: VertexColors,
     });
 
     // build mesh
-    var mesh = new Points( geometry, material );
-    var name = url.split( '' ).reverse().join( '' );
-    name = /([^/]*)/.exec( name );
-    name = name[ 1 ].split( '' ).reverse().join( '' );
-    mesh.name = name;
+    var mesh = new Points(geometry, material);
+    mesh.name = 'pointCloud';
     scene.add(mesh);
   }
 
   function update() {
-    controls.update();
+    let time = performance.now();
+    let delta = (time - prevTime) / 1000;
+
+    velocity.x -= velocity.x * 10.0 * delta;
+		velocity.z -= velocity.z * 10.0 * delta;
+
+    direction.z = Number(moveForward) - Number(moveBackward);
+    direction.x = Number(moveLeft) - Number(moveRight);
+    direction.normalize();
+
+    if (moveForward || moveBackward) velocity.z -= direction.z * 50.0 * delta;
+    if (moveLeft || moveRight) velocity.x -= direction.x * 50.0 * delta;
+
+    controls.getObject().translateX(velocity.x * delta);
+    controls.getObject().translateY(velocity.y * delta);
+    controls.getObject().translateZ(velocity.z * delta);
+
+    prevTime = time;
+
     renderer.render(scene, camera);
   }
 
-  function onWindowResize() {
+  function onWindowResize(canvas) {
     const { width, height } = canvas;
 
     camera.aspect = width / height;
@@ -128,201 +128,61 @@ export default (canvas) => {
     screenDimensions.width = width;
     screenDimensions.height = height;
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-    controls.handleResize();
+    renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  function removeObjectsByName(scene, name) {
-    const sceneChildren = scene.children;
-    for (let child in sceneChildren) {
-      if (sceneChildren[child].name === name) {
-        scene.remove(sceneChildren[child])
-      }
-    }
-  }
-
-  function onRemoveSection(scene) {
-    const deletePoints = (event) => {
-      const pointNames = event.detail.pointNames;
-      removeObjectsByName(scene, pointNames[0]);
-      removeObjectsByName(scene, pointNames[1]);
-    }
-    return deletePoints
-  }
-
-  function onMouseMove(event) {
-    event.preventDefault();
-
-    const raycaster = new Raycaster();
-
-    mouseVector.x =  2 * (event.clientX / window.innerWidth) - 1;
-    mouseVector.y =  1 - 2 * ( event.clientY / window.innerHeight );
-
-    raycaster.setFromCamera(mouseVector, camera);
-    raycaster.params.Points.threshold = 0.05;
-
-    const mesh = scene.getObjectByName(pointCloudName)
-    removeObjectsByName(scene, 'highlightPoint')
-
-
-    if (mesh) {
-      const intersects = raycaster.intersectObject(mesh, true);
-
-      if (intersects.length > 0) {
-        const distance_min = intersects[0].distance;
-        const nearestIntersects = intersects.filter(intersect => intersect.distance <= distance_min + 1);
-
-        for (let i = 0; i < nearestIntersects.length; i++) {
-          const intersection = nearestIntersects[ i ]
-          const dodecahedronGeometry = new DodecahedronGeometry(0.02)
-          dodecahedronGeometry.faces.map(face => face.color.setHex( 0xff0000 ))
-          const material = new MeshBasicMaterial( { vertexColors: FaceColors, overdraw: 0.5 } );
-
-          const dodecahedron = new Mesh( dodecahedronGeometry, material );
-          dodecahedron.position.x = intersection.point.x
-          dodecahedron.position.y = intersection.point.y
-          dodecahedron.position.z = intersection.point.z
-          dodecahedron.name = 'highlightPoint'
-          scene.add( dodecahedron );
-        }
-      }
-    }
-  }
-
-  function getPointUnderMouse() {
-    const raycaster = new Raycaster();
-    raycaster.setFromCamera(mouseVector, camera);
-    raycaster.params.Points.threshold = 0.05;
-    let x_mean = 0;
-    let y_mean = 0;
-    let z_mean = 0;
-
-    // raycaster.set( camera.position, mouseVector.sub( camera.position ).normalize() );
-    const intersects = raycaster.intersectObject(scene.getObjectByName(pointCloudName), true);
-    if (intersects.length > 0) {
-      const distance_min = intersects[0].distance;
-      const nearestIntersects = intersects.filter(intersect => intersect.distance <= distance_min + 1);
-      const coordinates = nearestIntersects.reduce((accumulator, currentValue) => {
-        accumulator[0] += currentValue.point.x;
-        accumulator[1] += currentValue.point.y;
-        accumulator[2] += currentValue.point.z;
-        return accumulator
-      }, [0, 0, 0])
-      x_mean = coordinates[0] / nearestIntersects.length;
-      y_mean = coordinates[1] / nearestIntersects.length;
-      z_mean = coordinates[2] / nearestIntersects.length;
-    }
-    return new Vector3(x_mean, y_mean, z_mean);
-  }
-
-  function onMouseDoubleClick(event) {
-    event.preventDefault();
-
-    const mouseVector = new Vector2();
-    const raycaster = new Raycaster();
-
-    mouseVector.x =  2 * (event.clientX / window.innerWidth) - 1;
-    mouseVector.y =  1 - 2 * ( event.clientY / window.innerHeight );
-
-    //mouseVector.unproject( camera );
-    raycaster.setFromCamera(mouseVector, camera);
-    raycaster.params.Points.threshold = 0.05;
-    let x_mean = 0;
-    let y_mean = 0;
-    let z_mean = 0;
-    let name = uniqueId('origin_');
-
-    // raycaster.set( camera.position, mouseVector.sub( camera.position ).normalize() );
-    const intersects = raycaster.intersectObject( scene.getObjectByName(pointCloudName), true );
-    if (intersects.length > 0) {
-      const distance_min = intersects[0].distance;
-      const nearestIntersects = intersects.filter(intersect => intersect.distance <= distance_min + 1);
-      const coordinates = nearestIntersects.reduce((accumulator, currentValue) => {
-        accumulator[0] += currentValue.point.x;
-        accumulator[1] += currentValue.point.y;
-        accumulator[2] += currentValue.point.z;
-        return accumulator
-      }, [0, 0, 0])
-      x_mean = coordinates[0] / nearestIntersects.length
-      y_mean = coordinates[1] / nearestIntersects.length
-      z_mean = coordinates[2] / nearestIntersects.length
-      name = uniqueId('point_');
-      const dodecahedronGeometry = new DodecahedronGeometry(0.1)
-      dodecahedronGeometry.faces.map(face => face.color.setHex( 0x7af442 ))
-      const material = new MeshBasicMaterial( { vertexColors: FaceColors, overdraw: 0.5 } );
-
-      const dodecahedron = new Mesh( dodecahedronGeometry, material );
-
-      dodecahedron.position.x = x_mean;
-      dodecahedron.position.y = y_mean;
-      dodecahedron.position.z = z_mean;
-      dodecahedron.name = name;
-      scene.add( dodecahedron );
-      update();
-    }
-
-    return {
-      name: name,
-      position: {
-        x: x_mean,
-        y: y_mean,
-        z: z_mean,
-      }
-    }
-  }
-
-  function onArrowKeyPress(keyCode){
-    const target = getPointUnderMouse();
-    const upVect = new Vector3( 0, 0, 1 );
-    const anHorizontalVect = new Vector3( 0, -1, 0 );
-    switch (keyCode) {
-      case 37:
-        camera.position.set(target.x + 30, target.y, target.z);
-        camera.up = upVect;
-        focusTarget(target);
+  function onKeyDown(event) {
+    switch (event.keyCode) {
+      case 38: // up
+      case 90: // z
+        moveForward = true;
         break;
-      case 38:
-        camera.position.set(target.x, target.y, target.z + 50);
-        camera.up = anHorizontalVect;
-        focusTarget(target);
+      case 37: // left
+      case 81: // q
+        moveLeft = true;
         break;
-      case 39:
-        camera.position.set(target.x - 30, target.y, target.z);
-        camera.up = upVect;
-        focusTarget(target);
+      case 40: // down
+      case 83: // s
+        moveBackward = true;
         break;
-      case 40:
-        resetCamera(camera);
+      case 39: // right
+      case 68: // d
+        moveRight = true;
         break;
       default:
-        camera.position.set(0, 0, 0);
-        camera.up = upVect;
+        break;
     }
-  }
+  };
 
-  function focusTarget(target){
-    controls.target = target;
-    controls.update();
-    camera.lookAt(target);
-  }
+  function onKeyUp(event) {
+    switch (event.keyCode) {
+      case 38: // up
+      case 90: // z
+        moveForward = false;
+        break;
+      case 37: // left
+      case 81: // q
+        moveLeft = false;
+        break;
+      case 40: // down
+      case 83: // s
+        moveBackward = false;
+        break;
+      case 39: // right
+      case 68: // d
+        moveRight = false;
+        break;
+      default:
+        break;
+    }
+  };
 
-  function onSpaceKeyPress(){
-    const target = getPointUnderMouse();
-    camera.up = new Vector3(0, 0, 1);
-    controls.target = target;
-    controls.update();
-    camera.lookAt(target);
-  }
 
   return {
     update,
+    onKeyDown,
+    onKeyUp,
     onWindowResize,
-    onMouseMove,
-    onMouseDoubleClick,
-    onArrowKeyPress,
-    onSpaceKeyPress,
-    onRemoveSection,
     createSceneSubjects,
     scene,
   }

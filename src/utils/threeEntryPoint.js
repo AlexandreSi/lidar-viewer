@@ -6,12 +6,12 @@ export default (containerElement, changePercentage, toggleColorsLoaded) => {
   const canvas = createCanvas(document, containerElement);
   let pointCloud = undefined;
   let sceneManager = new SceneManager3D(canvas);
-  loadPoints(null, toggleColorsLoaded);
+  loadPoints(toggleColorsLoaded);
 
   bindEventListeners();
   animate();
 
-  function loadPoints(fileToOpen, toggleColorsLoaded) {
+  function loadPoints(toggleColorsLoaded) {
     const fileURL = 'Block_589.las';
 
     const loader = new LasLoader(toggleColorsLoaded);
@@ -43,74 +43,42 @@ export default (containerElement, changePercentage, toggleColorsLoaded) => {
   }
 
   function createCanvas(document, containerElement) {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
+    canvas.requestPointerLock();
     containerElement.appendChild(canvas);
     return canvas;
   }
 
   function bindEventListeners() {
-    window.onkeydown = handleKeyPress;
     window.onresize = resizeCanvas;
-    window.onmousemove = handleMouse;
-    window.ondblclick = handleDoubleClick;
+    window.onkeydown = handleKeyDown;
+    window.onkeyup = handleKeyUp;
     resizeCanvas();
   }
 
   function resizeCanvas() {
-    canvas.style.width = '100%';
-    canvas.style.height= '100%';
+    canvas.style.width = "100%";
+    canvas.style.height= "100%";
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    sceneManager.onWindowResize();
+    sceneManager.onWindowResize(canvas);
   }
 
-  function handleMouse(event) {
-    sceneManager.onMouseMove(event);
-  }
-
-  function preventDefaultAction(event){
+  function handleKeyDown(event) {
     event.preventDefault();
     event.stopPropagation();
+    sceneManager.onKeyDown(event);
   }
 
-  function handleKeyPress(event) {
-    switch (true){
-      case ([37, 38, 39, 40].includes(event.keyCode)):
-        preventDefaultAction(event)
-        sceneManager.onArrowKeyPress(event.keyCode);
-        break;
-      case (event.keyCode === 32):
-        preventDefaultAction(event)
-        sceneManager.onSpaceKeyPress();
-        break;
-      default:
-        break;
-    }
-  }
-
-  function handleDoubleClick(event) {
-    const point = sceneManager.onMouseDoubleClick(event);
-  }
-
-  function handleViewChange(event) {
-    const { viewType } = event.detail;
-    switch (viewType) {
-      case "3D":
-        sceneManager = new SceneManager3D(canvas);
-        break;
-      default:
-        window.alert("Error: the requested view type is not available")
-    }
-    sceneManager.createSceneSubjects(sceneManager.scene, pointCloud);
-    bindEventListeners();
+  function handleKeyUp(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    sceneManager.onKeyUp(event);
   }
 
   function animate() {
     requestAnimationFrame(animate);
-    render()
-  }
 
-  function render() {
     sceneManager.update();
   }
 }
