@@ -1,6 +1,4 @@
 /* eslint-disable */
-// laslaz.js
-// LAS/LAZ loading
 
 ((scope) => {
   var pointFormatReaders = {
@@ -76,15 +74,11 @@
 
   var waitHandlers = {};
 
-  // This method is scope-wide since the nacl module uses this fuction to notify
-  // us of events
   scope.handleMessage = function(message_event) {
     var msg = message_event.data;
     var resolver = waitHandlers[msg.id];
     delete waitHandlers[msg.id];
 
-    // call the callback in a separate context, make sure we've cleaned our
-    // state out before the callback is invoked since it may queue more doExchanges
     setTimeout(function() {
       if (msg.error)
         return resolver.reject(new Error(msg.message || "Unknown Error"));
@@ -259,4 +253,3 @@
   scope.LASDecoder = LASDecoder;
   scope.LASModuleWasLoaded = false;
 })(module.exports);
-//})(this);

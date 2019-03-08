@@ -1,6 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// WARNING: This file was auto-generated, any change will be overridden in next release. Please use configs/es6.conf.js then run "npm run convert". //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import { Object3D, Vector3, Euler } from 'three-full';
 
 var PointerLockControls = function ( camera ) {
@@ -48,8 +45,6 @@ var PointerLockControls = function ( camera ) {
 	};
 
 	this.getDirection = function () {
-
-		// assumes the camera itself is not rotated
 
 		var direction = new Vector3( 0, 0, - 1 );
 		var rotation = new Euler( 0, 0, 0, 'YXZ' );
