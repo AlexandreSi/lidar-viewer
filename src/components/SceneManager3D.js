@@ -132,6 +132,7 @@ export default (canvas) => {
   }
 
   function onKeyDown(event) {
+    deactivateKey(event);
     switch (event.keyCode) {
       case 38: // up
       case 90: // z
@@ -154,7 +155,15 @@ export default (canvas) => {
     }
   };
 
+  function deactivateKey(event) {
+    if (event.keyCode in [ 38, 90, 37, 81, 40, 83, 39, 68]) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
   function onKeyUp(event) {
+    deactivateKey(event);
     switch (event.keyCode) {
       case 38: // up
       case 90: // z

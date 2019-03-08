@@ -65,14 +65,10 @@ export default (containerElement, changePercentage, toggleColorsLoaded) => {
   }
 
   function handleKeyDown(event) {
-    event.preventDefault();
-    event.stopPropagation();
     sceneManager.onKeyDown(event);
   }
 
   function handleKeyUp(event) {
-    event.preventDefault();
-    event.stopPropagation();
     sceneManager.onKeyUp(event);
   }
 
