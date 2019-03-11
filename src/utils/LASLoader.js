@@ -73,7 +73,8 @@ LasLoader.prototype = {
     var position = [];
     var color = [];
 
-    for ( var i = 0, l = LASHeader.pointsCount - 1; i < l; i ++ ) {
+    // load one every four point, for performance issues
+    for ( var i = 0, l = LASHeader.pointsCount - 1; i < l; i += 4 ) {
       var point = decoder.getPoint(i);
       position.push(
         (point.position[0] * LASHeader.scale[0])
