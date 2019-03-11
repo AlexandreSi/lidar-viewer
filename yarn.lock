@@ -10186,9 +10186,9 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-"three-full@https://github.com/sicara/three-full-sicara.git#dev":
+"three-full@https://github.com/Itee/three-full#v11.2.0":
   version "11.2.0"
-  resolved "https://github.com/sicara/three-full-sicara.git#9985dcb8d35d157af9aba12a875a88053f75c6a3"
+  resolved "https://github.com/Itee/three-full#4cdbc09d3c1673d0a5f5d19ce4d827b337438582"
 
 throat@^4.0.0:
   version "4.1.0"

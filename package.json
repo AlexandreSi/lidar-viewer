@@ -17,7 +17,7 @@
     "react-scripts": "2.1.3",
     "react-transition-group": "^2.5.3",
     "styled-components": "^4.1.3",
-    "three-full": "https://github.com/sicara/three-full-sicara.git#dev"
+    "three-full": "https://github.com/Itee/three-full#v11.2.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

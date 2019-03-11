@@ -2,7 +2,7 @@
 
 This project aims at exposing code to develop a web-based lidar viewer.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It is based on [`three.js`](https://threejs.org/), more specifically [`three-full`](https://github.com/Itee/three-full).
 
 # How to
 
@@ -25,3 +25,5 @@ Finally, launch the app:
 ```bash
 yarn start
 ```
+
+And navigate to http://localhost:3000/!
